@@ -1,34 +1,6 @@
-document.getElementById("clearCookies").addEventListener("click", async () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-    if (tabs.length === 0) {
-      document.getElementById("status").innerText =
-        "Erro: Não foi possível identificar a aba ativa.";
-      return;
-    }
-
-    const tab = tabs[0];
-    const url = new URL(tab.url);
-    const domain = url.hostname;
-
-    const cookies = await chrome.cookies.getAll({ domain });
-
-    if (cookies.length === 0) {
-      document.getElementById("status").innerText =
-        "Nenhum cookie encontrado para este domínio.";
-      return;
-    }
-
-    cookies.forEach((cookie) => {
-      const cookieUrl = `http${cookie.secure ? "s" : ""}://${cookie.domain}${
-        cookie.path
-      }`;
-      chrome.cookies.remove({
-        url: cookieUrl,
-        name: cookie.name,
-      });
-    });
-
-    document.getElementById("status").innerText =
-      "Cookies do domínio limpos com sucesso!";
+document.addEventListener('DOMContentLoaded', function() {
+  var confirmation_button = document.getElementById("confirmation_button");
+  confirmation_button.addEventListener('click', function() {
+      chrome.extension.getBackgroundPage().clean_active_tab_cookie();
   });
 });
